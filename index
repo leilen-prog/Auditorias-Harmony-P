@@ -1,1 +1,1119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmony Projects — Auditorías Operativas y de Servicio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1D9E75;--green2:#0F6E56;--green3:#085041;--gbg:#E1F5EE;--amber:#BA7517;--amberbg:#FAEEDA;--red:#A32D2D;--redbg:#FCEBEB;--purple:#534AB7;--purplebg:#EEEDFE;--blue:#1D6FA5;--bluebg:#E3F0F8;--gray:#5F5E5A;--graybg:#F1EFE8;--border:#e0e0e0;--bg:#f7f8f6;--white:#fff;--text:#1a1a1a;--text2:#5a5a5a;--radius:10px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+.app{max-width:700px;margin:0 auto;padding:0 0 3rem}
+.top-bar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+.logo{width:60px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.app-title{font-size:14px;font-weight:600;color:var(--text)}
+.app-sub{font-size:11px;color:var(--text2)}
+.top-right{margin-left:auto;display:flex;gap:6px}
+.btn-s{padding:6px 12px;background:var(--white);color:var(--text);border:1px solid var(--border);border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px}
+.btn-s:hover{background:var(--graybg)}
+.main-tabs{display:flex;background:var(--white);border-bottom:1px solid var(--border);overflow-x:auto}
+.mtab{padding:10px 14px;font-size:12px;font-weight:500;color:var(--text2);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:inherit;transition:all .15s}
+.mtab.active{color:var(--green2);border-bottom-color:var(--green2)}
+.mtab:hover:not(.active){background:var(--graybg)}
+.pane{padding:14px 16px}
+.prop-label{font-size:10px;font-weight:600;color:var(--green2);letter-spacing:.06em;text-transform:uppercase;margin:12px 0 6px;display:flex;align-items:center;gap:5px}
+.area-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.abtn{padding:7px 13px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text2);transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:5px}
+.abtn:hover{background:var(--gbg);border-color:#5DCAA5;color:var(--green2)}
+.abtn.active{background:var(--green2);color:#fff;border-color:var(--green2)}
+.bc{border-radius:8px;padding:1px 5px;font-size:10px;display:none}
+.abtn:not(.active) .bc{background:var(--redbg);color:var(--red)}
+.abtn.active .bc{background:rgba(255,255,255,0.25);color:#fff}
+.eval-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px}
+.eval-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.eval-title{font-size:14px;font-weight:600;color:var(--text)}
+.eval-meta{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.mi{padding:7px 10px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:var(--graybg);color:var(--text);font-family:inherit}
+.mi:focus{outline:none;border-color:var(--green)}
+.prog-wrap{margin-bottom:10px}
+.prog-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:4px}
+.prog-bg{background:var(--graybg);border-radius:4px;height:5px;overflow:hidden}
+.prog-fill{height:100%;background:var(--green);border-radius:4px;transition:width .3s}
+.cat-title{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text2);margin:14px 0 7px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.item-row{display:flex;align-items:flex-start;gap:8px;padding:10px 11px;border-radius:9px;border:1px solid var(--border);margin-bottom:6px;background:var(--white);transition:all .12s}
+.item-row:hover{background:var(--graybg)}
+.item-row.ok{border-color:#9FE1CB;background:var(--gbg)}
+.item-row.warn{border-color:#FAC775;background:var(--amberbg)}
+.item-row.bad{border-color:#F7C1C1;background:var(--redbg)}
+.item-main{flex:1;min-width:0}
+.item-text{font-size:13px;line-height:1.45;margin-bottom:2px;color:var(--text)}
+.item-hint{font-size:11px;color:var(--text2);font-style:italic;margin-bottom:3px}
+.item-w{font-size:10px;color:var(--text2);margin-bottom:3px}
+.rb-group{display:flex;gap:4px;flex-shrink:0}
+.rb{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--graybg);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.rb:hover{transform:scale(1.1)}
+.rb.ok{background:var(--gbg);border-color:var(--green);box-shadow:0 0 0 2px var(--green)}
+.rb.warn{background:var(--amberbg);border-color:var(--amber);box-shadow:0 0 0 2px var(--amber)}
+.rb.bad{background:var(--redbg);border-color:var(--red);box-shadow:0 0 0 2px var(--red)}
+.dtog{font-size:10px;color:var(--text2);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;text-decoration:underline}
+.dbox{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.dbox.open{display:block}
+textarea.ni{width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:var(--graybg);color:var(--text);font-family:inherit;resize:none;min-height:38px}
+.photo-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:7px}
+.pbtn{padding:5px 10px;font-size:11px;border:1px dashed var(--border);border-radius:6px;background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:3px}
+.pbtn:hover{border-color:var(--green);color:var(--green)}
+.pthumb{width:36px;height:36px;border-radius:5px;object-fit:cover;border:1px solid var(--border)}
+.ptag{font-size:9px;background:var(--graybg);color:var(--text2);padding:2px 5px;border-radius:4px}
+.btn-p{padding:9px 18px;background:var(--green);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:inherit;transition:background .15s}
+.btn-p:hover{background:var(--green2)}
+.hcard{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px}
+.badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:9px;white-space:nowrap;display:inline-block}
+.b-bad{background:var(--redbg);color:var(--red)}
+.b-warn{background:var(--amberbg);color:var(--amber)}
+.b-recur{background:var(--purplebg);color:var(--purple)}
+.b-abierto{background:var(--redbg);color:var(--red)}
+.b-proceso{background:var(--amberbg);color:var(--amber)}
+.b-cerrado{background:var(--gbg);color:var(--green2)}
+.smbtn{padding:5px 11px;font-size:11px;border:1px solid var(--border);border-radius:7px;background:transparent;cursor:pointer;font-family:inherit;color:var(--text2)}
+.smbtn:hover{background:var(--graybg)}
+.smbtn.ap{background:var(--amberbg);color:var(--amber);border-color:var(--amber)}
+.smbtn.ac{background:var(--gbg);color:var(--green2);border-color:var(--green)}
+.hist-row{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;font-size:12px;background:var(--white)}
+.hist-row:hover{background:var(--graybg)}
+.mc{background:var(--white);border:1px solid var(--border);border-radius:9px;padding:12px;text-align:center}
+.mn{font-size:22px;font-weight:600;margin-bottom:2px}
+.ml{font-size:10px;color:var(--text2)}
+.sec-label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text2);margin:1rem 0 6px}
+.filter-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.fbtn{padding:5px 12px;font-size:11px;border:1px solid var(--border);border-radius:8px;background:var(--white);cursor:pointer;font-family:inherit;color:var(--text2);transition:all .12s}
+.fbtn.active{background:var(--green2);color:#fff;border-color:var(--green2)}
+.fbtn.recur-btn{color:var(--purple);border-color:var(--purple)}
+.fbtn.recur-btn.active{background:var(--purple);color:#fff}
+.b-rapido{background:var(--bluebg);color:var(--blue)}
+.check-toggle{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--white);font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.check-toggle:hover{transform:scale(1.08)}
+.check-toggle.done{background:var(--gbg);border-color:var(--green)}
+.qr-nivel-btn.active{background:var(--amber);color:#fff;border-color:var(--amber)}
+.qr-nivel-btn.active.bad{background:var(--red);border-color:var(--red)}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--text2);font-size:13px}
+.empty-icon{font-size:32px;display:block;margin-bottom:8px}
+input[type=file]{display:none}
+@media(max-width:480px){.eval-meta{flex-direction:column;align-items:stretch}.mi{width:100%!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top-bar">
+  <div class="logo"><img src="data:image/png;base64,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" alt="Harmony Projects" style="width:34px;height:34px;object-fit:contain;border-radius:0;background:transparent"></div>
+  <div>
+    <div class="app-title">Harmony Projects</div>
+    <div class="app-sub">Auditorías Operativas y de Servicio</div>
+  </div>
+  <div class="top-right">
+    <button class="btn-s" onclick="abrirReporteRapido()" style="background:var(--green);color:#fff;border-color:var(--green)">📝 Reporte rápido</button>
+    <button class="btn-s" onclick="goTab('hallazgos')">⚠ Hallazgos</button>
+    <button class="btn-s" onclick="goTab('historial')">↺ Historial</button>
+  </div>
+</div>
+
+<div class="main-tabs">
+  <button class="mtab active" id="mt-eval" onclick="goTab('eval')">Evaluación</button>
+  <button class="mtab" id="mt-hallazgos" onclick="goTab('hallazgos')">Hallazgos <span id="badge-open" style="display:none;background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:1px 6px;font-size:10px;margin-left:3px"></span></button>
+  <button class="mtab" id="mt-historial" onclick="goTab('historial')">Historial</button>
+  <button class="mtab" id="mt-resumen" onclick="goTab('resumen')">Resumen</button>
+</div>
+
+<div id="pane-eval" class="pane">
+  <div class="prop-label">🛏 Habitaciones</div>
+  <div class="area-grid">
+    <button class="abtn" onclick="openArea('rooms_harmony',this)">Harmony <span class="bc" id="bc-rooms_harmony"></span></button>
+    <button class="abtn" onclick="openArea('rooms_sunset',this)">Sunset Shack <span class="bc" id="bc-rooms_sunset"></span></button>
+    <button class="abtn" onclick="openArea('rooms_campo',this)">Campo <span class="bc" id="bc-rooms_campo"></span></button>
+  </div>
+  <div class="prop-label">🏠 Housekeeping</div>
+  <div class="area-grid">
+    <button class="abtn" onclick="openArea('hk_hLav',this)">Lavandería Harmony <span class="bc" id="bc-hk_hLav"></span></button>
+    <button class="abtn" onclick="openArea('hk_hAreas',this)">Áreas Comunes Harmony <span class="bc" id="bc-hk_hAreas"></span></button>
+    <button class="abtn" onclick="openArea('hk_sunset',this)">HK Sunset <span class="bc" id="bc-hk_sunset"></span></button>
+    <button class="abtn" onclick="openArea('hk_campo',this)">HK Campo <span class="bc" id="bc-hk_campo"></span></button>
+  </div>
+  <div class="prop-label">🍽 Salones y Restaurantes</div>
+  <div class="area-grid">
+    <button class="abtn" onclick="openArea('salon_harmony',this)">Harmony + Bar <span class="bc" id="bc-salon_harmony"></span></button>
+    <button class="abtn" onclick="openArea('cocina_harmony',this)">Cocina Harmony <span class="bc" id="bc-cocina_harmony"></span></button>
+    <button class="abtn" onclick="openArea('salon_alchile',this)">Al Chile + Bar <span class="bc" id="bc-salon_alchile"></span></button>
+    <button class="abtn" onclick="openArea('cocina_alchile',this)">Cocina Al Chile <span class="bc" id="bc-cocina_alchile"></span></button>
+    <button class="abtn" onclick="openArea('salon_jb',this)">Juice Bar <span class="bc" id="bc-salon_jb"></span></button>
+    <button class="abtn" onclick="openArea('salon_lv',this)">La Ventanita <span class="bc" id="bc-salon_lv"></span></button>
+    <button class="abtn" onclick="openArea('casita',this)">Casita <span class="bc" id="bc-casita"></span></button>
+  </div>
+  <div class="prop-label">⚙ Operaciones</div>
+  <div class="area-grid">
+    <button class="abtn" onclick="openArea('fd_harmony',this)">Front Desk Harmony <span class="bc" id="bc-fd_harmony"></span></button>
+    <button class="abtn" onclick="openArea('fd_sunset',this)">Front Desk Sunset <span class="bc" id="bc-fd_sunset"></span></button>
+    <button class="abtn" onclick="openArea('hc',this)">Healing Centre <span class="bc" id="bc-hc"></span></button>
+    <button class="abtn" onclick="openArea('tiendita',this)">Tiendita / Bookstore <span class="bc" id="bc-tiendita"></span></button>
+    <button class="abtn" onclick="openArea('boh_harmony',this)">BOH / Jardín Harmony <span class="bc" id="bc-boh_harmony"></span></button>
+    <button class="abtn" onclick="openArea('boh_sunset',this)">BOH / Jardín Sunset <span class="bc" id="bc-boh_sunset"></span></button>
+    <button class="abtn" onclick="openArea('boh_campo',this)">BOH / Jardín Campo <span class="bc" id="bc-boh_campo"></span></button>
+    <button class="abtn" onclick="openArea('mant_harmony',this)">Mantenimiento Harmony <span class="bc" id="bc-mant_harmony"></span></button>
+    <button class="abtn" onclick="openArea('mant_sunset',this)">Mantenimiento Sunset <span class="bc" id="bc-mant_sunset"></span></button>
+    <button class="abtn" onclick="openArea('mant_campo',this)">Mantenimiento Campo <span class="bc" id="bc-mant_campo"></span></button>
+    <button class="abtn" onclick="openArea('reservaciones',this)">Reservaciones <span class="bc" id="bc-reservaciones"></span></button>
+    <button class="abtn" onclick="openArea('surf_rack',this)">Surf Rack <span class="bc" id="bc-surf_rack"></span></button>
+    <button class="abtn" onclick="openArea('recording_studio',this)">Recording Studio <span class="bc" id="bc-recording_studio"></span></button>
+  </div>
+
+  <div id="eval-panel" style="display:none;margin-top:12px">
+    <div class="eval-panel">
+      <div class="eval-header">
+        <div class="eval-title" id="ep-title"></div>
+        <button class="btn-s" onclick="closePanel()">✕</button>
+      </div>
+      <div class="eval-meta">
+        <input class="mi" type="text" id="ep-eval" placeholder="Tu nombre *" style="width:140px" required>
+        <input class="mi" type="date" id="ep-fecha" style="width:135px">
+        <input class="mi" type="text" id="ep-ref" placeholder="Ref: hab, turno..." style="width:135px">
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-row"><span id="ep-ptxt">0 / 0 evaluados</span><span id="ep-ppct" style="color:var(--green2);font-weight:600">0%</span></div>
+        <div class="prog-bg"><div class="prog-fill" id="ep-pbar" style="width:0%"></div></div>
+      </div>
+      <div id="ep-body"></div>
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn-p" onclick="guardarEval()">💾 Guardar evaluación</button>
+        <button class="btn-s" onclick="closePanel()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pane-hallazgos" class="pane" style="display:none">
+  <div class="filter-row">
+    <button class="fbtn active" id="fh-todos" onclick="filterH('todos')">Todos</button>
+    <button class="fbtn" id="fh-abierto" onclick="filterH('abierto')">Abiertos</button>
+    <button class="fbtn" id="fh-proceso" onclick="filterH('proceso')">En proceso</button>
+    <button class="fbtn" id="fh-cerrado" onclick="filterH('cerrado')">Cerrados</button>
+    <button class="fbtn recur-btn" id="fh-recurrente" onclick="filterH('recurrente')">⚠ Recurrentes</button>
+    <button class="fbtn" id="fh-refresh" onclick="cargarDatos(true)" style="margin-left:auto">🔄 Actualizar</button>
+  </div>
+  <div class="filter-row">
+    <select class="mi" id="fh-area-sel" onchange="renderHallazgos()" style="flex:1;min-width:180px">
+      <option value="">🔎 Todas las áreas</option>
+    </select>
+    <input class="mi" type="text" id="fh-search" placeholder="Buscar por descripción, nota o área..." style="flex:2;min-width:200px" oninput="renderHallazgos()">
+  </div>
+  <div id="hallazgos-sync-note" style="font-size:11px;color:var(--text2);margin-bottom:10px"></div>
+  <div id="hallazgos-body"></div>
+  <div class="empty-state" id="hallazgos-empty" style="display:none">
+    <span class="empty-icon" style="color:var(--green)">✓</span>Sin hallazgos en esta categoría.
+  </div>
+</div>
+
+<div id="pane-historial" class="pane" style="display:none">
+  <div class="filter-row">
+    <select class="mi" id="hist-area-sel" onchange="renderHistorial()" style="flex:1;min-width:180px">
+      <option value="">🔎 Todas las áreas</option>
+    </select>
+    <button class="fbtn" onclick="cargarDatos(true)" style="margin-left:auto">🔄 Actualizar</button>
+  </div>
+  <div class="sec-label">Evaluaciones registradas</div>
+  <div id="hist-body"></div>
+  <div class="empty-state" id="hist-empty" style="display:none">
+    <span class="empty-icon">↺</span>Aún no hay evaluaciones guardadas.
+  </div>
+</div>
+
+<div id="pane-resumen" class="pane" style="display:none">
+  <div class="sec-label">Resumen consolidado</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem" id="res-metrics"></div>
+  <div id="res-recur" style="margin-bottom:1rem"></div>
+  <div class="sec-label">Por área</div>
+  <div id="res-areas"></div>
+  <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn-p" onclick="exportarResumen()">📋 Copiar resumen para informe</button>
+    <button class="btn-s" onclick="cargarDatos(true)">🔄 Actualizar</button>
+  </div>
+</div>
+</div>
+
+<div id="qr-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto">
+  <div class="eval-panel" style="max-width:460px;width:100%;margin-top:40px">
+    <div class="eval-header">
+      <div class="eval-title">📝 Reporte rápido</div>
+      <button class="btn-s" onclick="cerrarReporteRapido()">✕</button>
+    </div>
+    <div class="prop-label" style="margin-top:0">Área</div>
+    <select class="mi" id="qr-area" style="width:100%;margin-bottom:12px">
+      <option value="">Selecciona un área...</option>
+    </select>
+
+    <div class="prop-label">Nivel</div>
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      <button type="button" class="fbtn qr-nivel-btn" id="qr-nivel-warn" onclick="qrSetNivel('warn')" style="flex:1">⚠️ Por mejorar</button>
+      <button type="button" class="fbtn qr-nivel-btn bad" id="qr-nivel-bad" onclick="qrSetNivel('bad')" style="flex:1">❌ No cumple</button>
+    </div>
+
+    <div class="prop-label">Descripción de la situación</div>
+    <textarea class="ni" id="qr-texto" placeholder="Describe brevemente lo que encontraste..." style="width:100%;min-height:70px;margin-bottom:12px"></textarea>
+
+    <div class="prop-label">Foto (opcional)</div>
+    <div class="photo-row" style="margin-bottom:12px">
+      <button class="pbtn" onclick="qrTomarFoto()">📷 Adjuntar foto</button>
+      <img class="pthumb" id="qr-photo-thumb" style="display:none">
+      <button class="pbtn" id="qr-photo-clear" style="display:none;border-color:var(--red);color:var(--red)" onclick="qrQuitarFoto()">✕ Quitar</button>
+    </div>
+
+    <div class="eval-meta" style="margin-top:2px">
+      <input class="mi" type="text" id="qr-eval" placeholder="Tu nombre *" style="flex:1" required>
+      <input class="mi" type="date" id="qr-fecha" style="flex:1">
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn-p" onclick="guardarReporteRapido()">💾 Guardar reporte</button>
+      <button class="btn-s" onclick="cerrarReporteRapido()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="file-antes" accept="image/*" onchange="handlePhoto(this,'antes')">
+<input type="file" id="file-despues" accept="image/*" onchange="handlePhoto(this,'despues')">
+<input type="file" id="file-qr" accept="image/*" onchange="handleQrPhoto(this)">
+
+<script>
+// ==========================================
+// CONFIGURACIÓN DE BACKEND: PEGA TU URL AQUÍ
+// ==========================================
+const WEB_API_URL = "https://script.google.com/macros/s/AKfycbxXsDxD8mow4ycbJorJobqjaEJt4LrpXIX7zZ5wiITXN-qjoD7FVDfbCPlyUGrTmvBy/exec";
+const SL={
+  rooms_harmony:'Habitaciones — Harmony Hotel',rooms_sunset:'Habitaciones — Sunset Shack',rooms_campo:'Habitaciones — Campo',
+  hk_hLav:'Lavandería — Harmony',hk_hAreas:'Áreas Comunes — Harmony',hk_sunset:'Housekeeping — Sunset',hk_campo:'Housekeeping — Campo',
+  salon_harmony:'Harmony Restaurant + Bar',cocina_harmony:'Cocina — Harmony',
+  salon_alchile:'Al Chile + Bar',cocina_alchile:'Cocina — Al Chile',
+  salon_jb:'Juice Bar',salon_lv:'La Ventanita',casita:'Casita / Área de Staff',
+  fd_harmony:'Front Desk — Harmony',fd_sunset:'Front Desk — Sunset',
+  hc:'Healing Centre',tiendita:'Tiendita / Bookstore',
+  boh_harmony:'BOH / Jardín — Harmony',boh_sunset:'BOH / Jardín — Sunset',boh_campo:'BOH / Jardín — Campo',
+  mant_harmony:'Mantenimiento — Harmony',mant_sunset:'Mantenimiento — Sunset',mant_campo:'Mantenimiento — Campo',
+  reservaciones:'Reservaciones',
+  surf_rack:'Surf Rack — Harmony',
+  recording_studio:'Recording Studio'
+};
+
+const SAL=[
+  {t:'Presentación personal: uniforme completo, nametag, higiene',w:4},
+  {t:'Calidez visual: contacto visual y sonrisa constante',w:5},
+  {t:'Uso del nombre: llama al cliente por su nombre siempre',w:4},
+  {t:'Alergias: consulta antes de iniciar la mesa, sin excepción',w:5,h:'Primer paso antes de tomar la orden'},
+  {t:'Mise en place: estación impecable y completa antes del servicio',w:4},
+  {t:'Empoderado: resuelve sin preguntar, no se paraliza ante quejas',w:5},
+  {t:'Trabajo en equipo: participación activa, no depende de otros',w:3},
+  {t:'Eficiencia: se mueve rápido dentro del salón',w:3},
+  {t:'Anticipación: anticipa los gustos del cliente',w:4},
+  {t:'Reposición proactiva: ofrece bebida cuando el vaso está 3/4 vacío',w:4,h:'En bar aplica también para cocteles y agua'},
+  {t:'Buena postura: postura correcta durante todo el servicio',w:2},
+  {t:'Silencio técnico: utensilios con mínimo de ruido',w:3},
+  {t:'Azafates limpios en todo momento del servicio',w:3}
+];
+const BAR=[
+  {t:'Bienvenida al bar: saluda, se presenta por nombre, entrega menú correcto',w:3},
+  {t:'Alergias o restricciones consultadas antes de preparar',w:5,h:'Aplica especialmente en jugos, batidos y bebidas con nueces o lácteos'},
+  {t:'Si bebida genérica, consulta preferencia antes de preparar',w:2},
+  {t:'Bebidas preparadas según procedimiento vigente, servidas en 5 minutos o menos',w:5},
+  {t:'Barra limpia, seca y sin vasos sucios durante el servicio',w:3},
+  {t:'Cristalería y cubertería pulidas y en buen estado',w:4},
+  {t:'Reposición proactiva: ofrece otra bebida cuando el vaso está 3/4 vacío',w:4,h:'Este es el estándar de bar — no esperar a que el vaso esté vacío'}
+];
+const MESA=[
+  {t:'Orden repetida para verificar que está correcta',w:3},
+  {t:'Tiempos de servicio cumplidos: entradas 8 min, fuerte 18 min, bebida 5 min',w:5},
+  {t:'Platos servidos por la derecha cuando sea posible',w:2},
+  {t:'Verificación de calidad a los 5 min con pregunta específica, no solo preguntando si todo está bien',w:3},
+  {t:'Presentación de platos según ficha técnica vigente',w:5},
+  {t:'Platos retirados por la izquierda cuando sea posible',w:2},
+  {t:'Postres y café o té ofrecidos; espacio preparado antes de servir',w:2},
+  {t:'Cuenta en 3 minutos o menos, bolígrafo azul o negro',w:2},
+  {t:'Atención activa incluso después de firmada la cuenta',w:2},
+  {t:'Despedida amable',w:3}
+];
+const COCINA=[
+  {t:'Cocina ordenada y limpia en todo momento del servicio',w:5},
+  {t:'Fichas técnicas accesibles y actualizadas en área de preparación',w:4},
+  {t:'Personal con carné de manipulación de alimentos al día',w:5},
+  {t:'Cabello cubierto; mallas disponibles en entrada de cocina',w:4},
+  {t:'Lavamanos con jabón antibacterial accesible al ingresar',w:4},
+  {t:'Sin artículos personales dentro de la cocina',w:2},
+  {t:'Sin objetos obstruyendo salidas de emergencia',w:5},
+  {t:'Basureros con tapa y pedal funcional, limpios',w:3},
+  {t:'Sin presencia de animales ni signos de plagas',w:5},
+  {t:'Descongelación en cámara fría, nunca a temperatura ambiente',w:5},
+  {t:'Cámaras: temperatura correcta según procedimiento, PEPS, rotulación al día',w:5},
+  {t:'Bodegas: limpias, PEPS, rotulación, productos a 15cm o más del suelo',w:4},
+  {t:'Programa de limpieza y desinfección con evidencia de cumplimiento',w:4},
+  {t:'Uniforme completo: delantal, malla, zapatos adecuados',w:4},
+  {t:'Equipos funcionando: cámaras, extractores, hornos',w:4},
+  {t:'BOH limpio: sin derrames, pileta de lavado en orden',w:4}
+];
+const HAB=[
+  ['Acceso y entrada',[
+    {t:'Llavín y acceso funcionan correctamente',w:3},
+    {t:'Puerta limpia, bisagras sin sonido, cierre correcto',w:2},
+    {t:'Cedazos en buen estado, sin roturas',w:2},
+    {t:'Ventanería funciona sin dificultad ni ruido',w:2}
+  ]],
+  ['Estructura y acabados',[
+    {t:'Techo limpio, sin manchas, goteras ni humedad',w:5},
+    {t:'Paredes: pintura impecable, sin huellas ni trabajos incompletos',w:3},
+    {t:'Rodapiés, fragua y cerámica sin daños',w:2},
+    {t:'Sombras de lámparas limpias y en buen estado',w:1}
+  ]],
+  ['Cama y ropa blanca',[
+    {t:'Sábanas estiradas sin arrugas ni cabellos, según estándar de montaje vigente',w:5},
+    {t:'Almohadas en cantidad correcta y buen estado',w:3},
+    {t:'Linos sin manchas, roturas ni desgaste visible',w:4},
+    {t:'Respaldo de cama en perfectas condiciones',w:2},
+    {t:'Mesas de noche limpias, sin polvo ni objetos ajenos',w:2}
+  ]],
+  ['Mobiliario',[
+    {t:'Silla de escritorio sólida, sin ruido al moverse',w:2},
+    {t:'Muebles limpios, sin polvo, en buen estado',w:2},
+    {t:'Control de AC: funcionando correctamente y con baterías',w:3},
+    {t:'Closet: 10 ganchos, 2 sombrillas, bolsa lavandería con boleta',w:3}
+  ]],
+  ['Climatización e iluminación',[
+    {t:'AC en automático entre 68 y 74 grados F, sin temporizador',w:4},
+    {t:'Todos los bombillos funcionando',w:3},
+    {t:'Apagadores y tomacorrientes limpios y en buen estado',w:2}
+  ]],
+  ['Minibar',[
+    {t:'Inventario completo y productos vigentes, fechas revisadas',w:4},
+    {t:'Menú de minibar limpio, legible y actualizado',w:2},
+    {t:'Área de minibar limpia, sin derrames',w:2}
+  ]],
+  ['Baño interior',[
+    {t:'Ducha limpia, azulejos sin manchas, sin residuos de jabón',w:5},
+    {t:'Grifería y cromos pulidos, sin manchas de agua',w:3},
+    {t:'Inodoro limpio interior y exterior',w:5},
+    {t:'Espejo y lavamanos limpios, sin huellas',w:3},
+    {t:'Drenaje fluye correctamente, sin estancamiento',w:4},
+    {t:'Cortina de baño impecable, sin manchas ni moho',w:3},
+    {t:'Amenidades sobre toallita facial, dispensadores llenos',w:3},
+    {t:'Paños: 2 cuerpo, 2 mano, 2 faciales en perfectas condiciones',w:3},
+    {t:'Basurero limpio y con bolsa',w:2}
+  ]],
+  ['Deck y exterior',[
+    {t:'Deck limpio, sin polvo ni suciedad',w:3},
+    {t:'Hamaca y mobiliario exterior en buen estado',w:2},
+    {t:'Ducha exterior con agua caliente funcional — punto crítico',w:5},
+    {t:'Puerta o ventana hacia deck funciona sin sonidos',w:2}
+  ]],
+  ['Seguridad, tecnología y olores',[
+    {t:'Caja fuerte: limpia, abierta y funcional para nuevo huésped',w:5},
+    {t:'Internet con señal constante y velocidad adecuada',w:3},
+    {t:'Teléfono desinfectado y funcionando',w:2},
+    {t:'Habitación sin olores desagradables, bien ventilada',w:5},
+    {t:'Rótulo No Molestar detrás de la puerta',w:1}
+  ]]
+];
+function makeHAB(){return Object.fromEntries(HAB);}
+
+const ITEMS={
+  rooms_harmony:makeHAB(),rooms_sunset:makeHAB(),rooms_campo:makeHAB(),
+  hk_hLav:{
+    'Orden y limpieza':[
+      {t:'Área limpia, seca y sin malos olores',w:3},{t:'Estantes ordenados: sábanas, fundas y paños por tipo',w:3},
+      {t:'Máquinas limpias interior y exterior',w:3},{t:'Pilas sin residuos de jabón ni suciedad',w:2},{t:'Tendero en buen estado y ordenado',w:2}
+    ],
+    'Operación':[
+      {t:'Cargas completas para optimizar el equipo',w:3},{t:'Separación correcta: blancos, colores, paños de limpieza',w:4},
+      {t:'Productos rotulados y almacenados correctamente',w:3},{t:'Linos con manchas o roturas separados para baja',w:4}
+    ],
+    'Infraestructura':[
+      {t:'Techos, paredes, pisos y drenajes en buen estado',w:2},{t:'Iluminación adecuada para trabajar',w:2},{t:'Equipos funcionando correctamente',w:3}
+    ]
+  },
+  hk_hAreas:{
+    'Lobby y entrada':[
+      {t:'Tapetes limpios y correctamente alineados',w:3},{t:'Muebles sacudidos, cojines acomodados, sin manchas',w:3},
+      {t:'Vidrios, espejos y superficies sin huellas ni polvo',w:3},{t:'Plantas sin hojas secas ni polvo en maceteros',w:2},{t:'Sin telas de araña en esquinas, marcos ni techos',w:2}
+    ],
+    'Baños públicos':[
+      {t:'Baños revisados mínimo 3 veces al día, registro al día',w:4},{t:'Inodoros y lavamanos limpios y desinfectados',w:5},
+      {t:'Dispensadores: jabón, papel higiénico y mano llenos',w:4},{t:'Sin olores desagradables, buena ventilación',w:5},
+      {t:'Basureros limpios con bolsa',w:2},{t:'Pisos limpios y secos',w:3}
+    ],
+    'Piscina y alrededores':[
+      {t:'Camas acomodadas con forro limpio, paños en rollito disponibles',w:3},{t:'Área de piscina limpia, sin basura',w:4},
+      {t:'Luz interna de piscina funcionando — punto crítico',w:5},{t:'Química del agua correcta según procedimiento vigente',w:5}
+    ],
+    'Pasillos y áreas generales':[
+      {t:'Pasillos sin objetos fuera de lugar',w:2},{t:'Iluminación de áreas comunes funcionando',w:2},{t:'Vegetación exterior sin hojas secas ni ramas caídas',w:2}
+    ]
+  },
+  hk_sunset:{
+    'Habitaciones y áreas':[
+      {t:'Habitaciones limpias y montadas antes de hora de llegada',w:5},{t:'Baños de habitación: limpios, amenidades completas, paños correctos',w:5},{t:'Áreas comunes: lobby, baños públicos y alrededores limpios',w:4}
+    ],
+    'Operación HK':[
+      {t:'EPP correcto: guantes y mascarilla, cambio al pasar de área',w:3},{t:'Productos usados correctamente, tiempos de contacto respetados',w:3},
+      {t:'Lost and Found: objetos reportados a recepción de inmediato',w:4},{t:'Caja fuerte con objetos de valor: no limpiar, reportar y salir',w:5},{t:'Linos con manchas separados para baja',w:3}
+    ],
+    'Infraestructura':[{t:'Carrito y equipo ordenado, completo y limpio',w:2},{t:'Área de lavandería: máquinas y estantes en buen estado',w:2}]
+  },
+  hk_campo:{
+    'Habitaciones y áreas':[
+      {t:'Habitaciones limpias y montadas antes de hora de llegada',w:5},{t:'Baños: limpios, amenidades completas, paños correctos',w:5},{t:'Áreas comunes: lobby, baños públicos y alrededores limpios',w:4}
+    ],
+    'Operación HK':[
+      {t:'EPP correcto: guantes y mascarilla, cambio al pasar de área',w:3},{t:'Productos usados correctamente, tiempos de contacto respetados',w:3},
+      {t:'Lost and Found: reportados a recepción de inmediato',w:4},{t:'Caja fuerte con objetos de valor: no limpiar, reportar y salir',w:5},{t:'Linos con manchas separados para baja',w:3}
+    ],
+    'Infraestructura':[{t:'Carrito y equipo ordenado, completo y limpio',w:2},{t:'Área de lavandería en buen estado',w:2}]
+  },
+  salon_harmony:{'Servicio Hospitalidad Radical':SAL,'Estandar de mesa':MESA,'Bar Harmony':BAR,
+    'Ambiente':[{t:'Iluminación, música y temperatura acordes al servicio',w:3},{t:'Menú limpio, legible, sin errores, buena presentación',w:3},{t:'Imagen gráfica Harmony respetada',w:4},{t:'Mobiliario limpio y en buen estado',w:3}]},
+  cocina_harmony:{'Higiene orden y manipulacion':COCINA},
+  salon_alchile:{'Servicio Hospitalidad Radical':SAL,'Estandar de mesa':MESA,'Bar Al Chile':BAR,
+    'Ambiente':[{t:'Iluminación, música y temperatura acordes al concepto',w:3},{t:'Menú limpio y en buen estado',w:3},{t:'Baños del restaurante limpios y bien dotados',w:4},{t:'Mobiliario limpio y en buen estado',w:3}]},
+  cocina_alchile:{'Higiene orden y manipulacion':COCINA},
+  salon_jb:{
+    'Servicio Hospitalidad Radical':SAL,
+    'Atencion Juice Bar':[
+      {t:'Punto de venta invitante, limpio y ordenado en todo momento',w:4},{t:'Alergias o restricciones consultadas antes de preparar',w:5,h:'Especialmente nueces, lácteos y proteínas en polvo'},
+      {t:'Conocimiento completo del menú y productos del día',w:4},{t:'Tiempo de preparación y entrega dentro del estándar',w:3},{t:'Presentación del producto según ficha técnica vigente',w:4}
+    ],
+    'Ambiente y mise en place':[{t:'Estación de trabajo completa y lista antes de abrir',w:3},{t:'Imagen gráfica Harmony respetada',w:3},{t:'Equipos funcionando: extractor, licuadora, máquina café',w:3}]
+  },
+  salon_lv:{
+    'Servicio Hospitalidad Radical':SAL,
+    'Atencion La Ventanita':[
+      {t:'Punto de venta invitante, limpio y ordenado en todo momento',w:4},{t:'Alergias o restricciones consultadas antes de preparar',w:5},
+      {t:'Conocimiento completo del menú y ofertas del día',w:4},{t:'Tiempo de entrega dentro del estándar',w:3},{t:'Presentación del producto correcta y apetecible',w:4}
+    ],
+    'Ambiente y mise en place':[{t:'Estación de trabajo completa antes de abrir',w:3},{t:'Imagen gráfica Harmony respetada',w:3},{t:'Equipos funcionando correctamente',w:3}]
+  },
+  casita:{
+    'Áreas comunes y comedor':[{t:'Comedor limpio, ordenado, menaje en buen estado',w:3},{t:'Baños: limpios, jabón, papel, basureros en buen estado',w:4},{t:'Respeto visible a reglas de convivencia',w:5},{t:'Sin olores desagradables, buena ventilación',w:3}],
+    'Habitaciones de staff':[{t:'Habitaciones limpias, camas tendidas, ropa en orden',w:4},{t:'Cuartos ventilados, sin acumulación de objetos',w:3},{t:'Lockers: en orden, buen estado y con llave',w:2}],
+    'Cumplimiento':[{t:'Uso eficiente de electricidad y agua',w:4},{t:'Pizarra o canales de comunicación con info reciente',w:2}],
+    'Infraestructura':[{t:'Techos, paredes, pisos y puertas en buen estado',w:2},{t:'Jardines del área de staff ordenados',w:2}]
+  },
+  fd_harmony:{
+    'Check in':[{t:'Persona disponible al arribo del huésped',w:5},{t:'Equipaje coordinado para habitación',w:3},{t:'In-house al día, habitación asignada antes del arribo',w:4},{t:'Pasaporte o cédula y tarjeta solicitados correctamente',w:3},{t:'Servicios explicados: internet, desayuno, yoga, bici, MC',w:3},{t:'Link Mobile Concierge enviado y explicado',w:3},{t:'Entrega de habitación con acompañamiento e información',w:4}],
+    'Servicio en desk':[{t:'Actitud: amable, contacto visual, sonrisa, uso del nombre',w:5},{t:'Presentación personal: uniforme, nametag, higiene',w:4},{t:'Teléfono respondido en 3 timbres o menos con frase correcta',w:3},{t:'Conocimiento de servicios, tours y sostenibilidad',w:4},{t:'Correos contestados en 12 horas o menos de forma personalizada',w:3}],
+    'Check out':[{t:'Ayuda con equipaje coordinada a la salida',w:3},{t:'Proceso eficiente, pregunta por estadía, cobro correcto',w:5}],
+    'Cumplimiento':[{t:'Caja chica con arqueo diario y evidencia',w:5},{t:'Orden y limpieza del área: frente, atrás y gavetas',w:3},{t:'Maletas con tag adecuado y en su lugar',w:2}]
+  },
+  fd_sunset:{
+    'Check in':[{t:'Persona disponible al arribo del huésped',w:5},{t:'Equipaje coordinado',w:3},{t:'In-house al día, habitación asignada',w:4},{t:'Pasaporte o cédula y tarjeta solicitados',w:3},{t:'Servicios del hotel explicados correctamente',w:3},{t:'Entrega de habitación con información completa',w:4}],
+    'Servicio en desk':[{t:'Actitud: amable, contacto visual, sonrisa, uso del nombre',w:5},{t:'Presentación personal: uniforme, nametag, higiene',w:4},{t:'Teléfono en 3 timbres o menos con frase correcta',w:3}],
+    'Check out':[{t:'Equipaje coordinada a la salida',w:3},{t:'Proceso eficiente, cobro correcto, pregunta por estadía',w:5}],
+    'Cumplimiento':[{t:'Caja chica con arqueo diario y evidencia',w:5},{t:'Orden y limpieza del área',w:3}]
+  },
+  hc:{
+    'Experiencia':[{t:'Espacio limpio, armónico, silencioso y con aroma agradable',w:5},{t:'Terapeuta o instructor: presentación impecable, saludo cálido',w:4},{t:'Tratamiento o clase inicia puntualmente',w:4},{t:'Experiencia personalizada, anticipa necesidades',w:4}],
+    'Estándares':[{t:'Agenda del día publicada y comunicada a Front Desk',w:3},{t:'Suministros completos, vigentes y en orden',w:4}],
+    'Infraestructura':[{t:'Ventilación, temperatura y acústica adecuadas',w:3},{t:'Camillas y equipos limpios y en perfecto estado',w:4}]
+  },
+  tiendita:{
+    'Experiencia':[{t:'Ambiente: orden, limpieza, temperatura, invita a comprar',w:5},{t:'Encargado presente y fuera o detrás del mostrador siempre',w:5},{t:'Actitud positiva, conocimiento de productos, ganas de vender',w:5},{t:'Imagen gráfica respetada: tipografía, colores, formatos',w:4},{t:'Presentación personal: uniforme, nametag, higiene',w:4},{t:'Producto: suficiente, ordenado, precios claros en todo',w:4}],
+    'Cumplimiento':[{t:'Inventario al día, completo y en orden',w:4},{t:'Bodegas: orden, limpieza, rotulación, productos con precios',w:4}],
+    'Infraestructura':[{t:'Mobiliario, iluminación y ventilación en buen estado',w:3},{t:'Equipos IT funcionando: computadora, internet',w:3}]
+  },
+  boh_harmony:{
+    'Orden y limpieza':[{t:'Áreas BOH sin materiales abandonados ni desorden',w:3},{t:'Jardines: podados, sin hojas secas ni ramas caídas',w:3},{t:'Separación de residuos correcta en todos los puntos',w:4}],
+    'Eficiencia y seguridad':[{t:'Luces apagadas donde no se usan, sin fugas de agua visibles',w:4},{t:'Canales de comunicación con info reciente y relevante',w:2},{t:'Rondas de supervisión realizadas y bitácoras firmadas',w:4}]
+  },
+  boh_sunset:{
+    'Orden y limpieza':[{t:'Áreas BOH sin materiales abandonados ni desorden',w:3},{t:'Jardines: podados, sin hojas secas ni ramas caídas',w:3},{t:'Separación de residuos correcta',w:4}],
+    'Eficiencia y seguridad':[{t:'Luces apagadas donde no se usan, sin fugas de agua',w:4},{t:'Rondas de supervisión y bitácoras al día',w:4}]
+  },
+  boh_campo:{
+    'Orden y limpieza':[{t:'Áreas BOH sin materiales abandonados ni desorden',w:3},{t:'Jardines: podados, sin hojas secas ni ramas caídas',w:3},{t:'Separación de residuos correcta',w:4}],
+    'Eficiencia y seguridad':[{t:'Luces apagadas donde no se usan, sin fugas de agua',w:4},{t:'Rondas de supervisión y bitácoras al día',w:4}]
+  },
+  mant_harmony:{
+    'Operación':[{t:'Bitácora de mantenimiento al día y completa',w:4},{t:'Herramientas ordenadas, limpias y en buen estado',w:3},{t:'Sin equipos en desuso acumulados en áreas de trabajo',w:3},{t:'Órdenes de trabajo con fecha y responsable asignado',w:4}],
+    'Infraestructura general':[{t:'Sin goteras, filtraciones ni humedad visible en ningún área',w:5},{t:'Iluminación exterior e interior funcionando correctamente',w:3},{t:'Sin fugas de agua visibles en instalaciones',w:5}]
+  },
+  mant_sunset:{
+    'Operación':[{t:'Bitácora de mantenimiento al día',w:4},{t:'Herramientas en buen estado y ordenadas',w:3},{t:'Órdenes de trabajo con fecha y responsable',w:4}],
+    'Infraestructura general':[{t:'Sin goteras ni filtraciones visibles',w:5},{t:'Iluminación funcionando correctamente',w:3},{t:'Sin fugas de agua en instalaciones',w:5}]
+  },
+  mant_campo:{
+    'Operación':[{t:'Bitácora de mantenimiento al día',w:4},{t:'Herramientas en buen estado y ordenadas',w:3},{t:'Órdenes de trabajo con fecha y responsable',w:4}],
+    'Infraestructura general':[{t:'Sin goteras ni filtraciones visibles',w:5},{t:'Iluminación funcionando correctamente',w:3},{t:'Sin fugas de agua en instalaciones',w:5}]
+  },
+  reservaciones:{
+    'Experiencia':[
+      {t:'Reservaciones en línea: permite completar una reserva; tarifas y promociones disponibles son claras y no generan confusión',w:5},
+      {t:'Correos de seguimiento contestados en menos de 12 horas de forma personalizada',w:5},
+      {t:'Proceso de reservación y cobro: fácil y eficiente para el cliente',w:5},
+      {t:'Vuelo, transfer u otros servicios: confirmación correcta, a tiempo y sin dificultad',w:5},
+      {t:'Presentación personal del equipo: uniforme, nametag, higiene',w:1}
+    ],
+    'Cumplimiento de estándar':[
+      {t:'Bandeja de entrada sin correos de más de 24 horas sin respuesta',w:5},
+      {t:'Script de ventas: se sigue el script de ventas vigente',w:5},
+      {t:'Rate Query: se utiliza para ofrecer disponibilidad a los clientes',w:5},
+      {t:'Cross Selling: se mencionan dos o más destinos o servicios complementarios al cliente',w:5},
+      {t:'Check list diario activo, en orden y al día en computadora',w:5},
+      {t:'Prepagos: 90% de las reservaciones dentro de fechas de cobro tienen prepago asignado',w:5},
+      {t:'Las reservas tienen prepagos asignados según política de prepago vigente',w:5},
+      {t:'Control de depósitos para uso futuro: registro detallado y actualizado',w:5},
+      {t:'In-House: al día con información necesaria para buen servicio, con detalles específicos de cada reservación',w:5},
+      {t:'Reservas revisadas aleatoriamente: tarifa corresponde al season actual',w:3},
+      {t:'Perfil del huésped en sistema completo con la información requerida',w:3},
+      {t:'Imagen gráfica Harmony respetada en todas las comunicaciones',w:3},
+      {t:'Participación en actividades de sostenibilidad',w:3},
+      {t:'Uso eficiente de electricidad: luz natural aprovechada, equipos sin uso desconectados',w:5}
+    ],
+    'Infraestructura y mantenimiento':[
+      {t:'Techos, paredes, pisos, puertas, ventanas y vidrios en buen estado',w:1},
+      {t:'Mobiliario: escritorios y estantería en buen estado y funcionales',w:1},
+      {t:'Ventilación y AC funcionando correctamente',w:1},
+      {t:'Iluminación adecuada para trabajar',w:1},
+      {t:'Equipos IT: computadoras, internet y OPERA funcionando correctamente',w:1}
+    ]
+  },
+  surf_rack:{
+    'Experiencia del huésped':[
+      {t:'Equipo acuático disponible: surf boards y boogies — suficientes y accesibles',w:4},
+      {t:'Equipo en buen estado visible: sin daños, roturas ni desgaste peligroso',w:5},
+      {t:'Equipo limpio y con buen aspecto al momento de entregarlo al huésped',w:4},
+      {t:'Proceso de préstamo claro: el huésped sabe qué tomar, cómo usarlo y dónde devolverlo',w:3},
+      {t:'Atención amable y pizarras al día',w:3}
+    ],
+    'Cumplimiento de estándar':[
+      {t:'Inventario al día: registro de equipos disponibles, prestados y en reparación',w:4},
+      {t:'Control de préstamos: registro de quién lleva qué equipo y cuándo lo devuelve',w:4},
+      {t:'Tabla de surf con leash y quillas completas, sin daños estructurales',w:5},
+      {t:'Boogies con cordón funcional y en buen estado',w:3},
+      {t:'Equipo reportado con daños fuera de uso y en proceso de reparación o baja',w:4},
+      {t:'Señalización de seguridad visible: reglas de uso, profundidades, área permitida',w:4}
+    ],
+    'Infraestructura y almacenamiento':[
+      {t:'Baño limpio y en buen estado',w:3},
+      {t:'Puesto limpio y ordenado en todo momento',w:3},
+      {t:'Área de almacenamiento ordenada, limpia y techada',w:3},
+      {t:'Racks y soportes en buen estado, sin riesgo de caída de equipo',w:4},
+      {t:'Área segura: sin objetos que representen riesgo para el huésped o el equipo',w:4},
+      {t:'Acceso al área controlado y en buen estado',w:2}
+    ]
+  },
+  recording_studio:{
+    'Control de accesos y seguridad':[
+      {t:'Bitácora de llaves al día: quién las llevó, hora de salida y hora de devolución',w:5},
+      {t:'Espacio ordenado tras cada uso: se verifica y se comparte foto del estado final',w:4},
+      {t:'Ingreso solo con autorización previa — se respeta el protocolo de acceso',w:5},
+      {t:'Sistema de alarma: funcionando correctamente y mantenimiento al día',w:4}
+    ],
+    'Infraestructura y mantenimiento técnico':[
+      {t:'Aire acondicionado: prueba de funcionamiento realizada, compresor sin fallas',w:5,h:'Antecedentes de fallas críticas en compresor — revisar con especial atención'},
+      {t:'Limpieza especializada: housekeeping realizó limpieza profunda previa a visita de huésped o cliente externo',w:4},
+      {t:'Iluminación, acústica y ventilación en condiciones óptimas para grabación',w:3},
+      {t:'Paredes, pisos, techos y puertas en buen estado — sin daños que afecten acústica',w:3}
+    ],
+    'Software y licencias':[
+      {t:'Pro Tools u otro software de grabación: licencia vigente y suscripción activa',w:5,h:'Suscripción anual aprox. $239 — verificar registro bajo Software Licenses'},
+      {t:'Licencias registradas correctamente en el sistema de compras',w:4},
+      {t:'Software actualizado a versión vigente',w:3}
+    ],
+    'Hardware y equipos':[
+      {t:'Interfaz de audio funcionando correctamente',w:5,h:'Verificar contra solicitud de compra SC-007816'},
+      {t:'Plug-ins instalados y activados correctamente',w:4},
+      {t:'Micrófonos, audífonos y cables en buen estado y completos',w:4},
+      {t:'Consola o controlador MIDI funcional sin daños visibles',w:3},
+      {t:'Monitores de estudio con sonido limpio, sin distorsión',w:4},
+      {t:'Computadora del estudio: encendida, rápida, sin errores de sistema',w:4}
+    ]
+  }
+};
+
+let ST={cur:'',ratings:{},notes:{},photos:{},curPhotoKey:'',historial:[],hallazgos:[],hFilter:'todos'};
+let itemIndex=[];
+let QR={foto:'',nivel:''};
+
+// ==========================================
+// SINCRONIZACIÓN CON EL BACKEND (Google Sheets)
+// ==========================================
+
+function poblarSelectsArea(){
+  const opts=Object.entries(SL).sort((a,b)=>a[1].localeCompare(b[1]))
+    .map(([id,label])=>'<option value="'+id+'">'+label+'</option>').join('');
+  const sel1=document.getElementById('fh-area-sel');if(sel1)sel1.insertAdjacentHTML('beforeend',opts);
+  const sel2=document.getElementById('hist-area-sel');if(sel2)sel2.insertAdjacentHTML('beforeend',opts);
+  const sel3=document.getElementById('qr-area');if(sel3)sel3.insertAdjacentHTML('beforeend',opts);
+}
+
+function cargarDatos(manual){
+  const note=document.getElementById('hallazgos-sync-note');
+  if(note)note.textContent='⏳ Sincronizando con la nube...';
+  fetch(WEB_API_URL+'?action=listado')
+    .then(r=>r.json())
+    .then(data=>{
+      if(!data||!data.ok)throw new Error((data&&data.error)||'Respuesta inválida del servidor');
+      ST.historial=data.historial||[];
+      ST.hallazgos=data.hallazgos||[];
+      updateBadges();
+      renderHallazgos();renderHistorial();renderResumen();
+      if(note)note.textContent='✓ Sincronizado — '+new Date().toLocaleTimeString('es-CR',{hour:'2-digit',minute:'2-digit'});
+    })
+    .catch(err=>{
+      if(note)note.textContent='⚠ No se pudo sincronizar con la nube ('+err.message+'). Mostrando la última información disponible.';
+      updateBadges();renderHallazgos();renderHistorial();renderResumen();
+      if(manual)alert('No se pudo sincronizar con la nube:\n'+err.message);
+    });
+}
+
+function goTab(t){
+  ['eval','hallazgos','historial','resumen'].forEach(p=>{
+    document.getElementById('pane-'+p).style.display='none';
+    const m=document.getElementById('mt-'+p);if(m)m.classList.remove('active');
+  });
+  document.getElementById('pane-'+t).style.display='block';
+  const m=document.getElementById('mt-'+t);if(m)m.classList.add('active');
+  if(t==='hallazgos'||t==='historial'||t==='resumen'){
+    renderHallazgos();renderHistorial();renderResumen();
+    cargarDatos();
+  }
+}
+
+function openArea(id,btn){
+  ST.cur=id;ST.ratings={};ST.notes={};ST.photos={};
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('ep-title').textContent=SL[id]||id;
+  document.getElementById('ep-fecha').value=new Date().toISOString().slice(0,10);
+  document.getElementById('ep-eval').value='';
+  document.getElementById('ep-ref').value='';
+  renderEvalBody(id);
+  const panel=document.getElementById('eval-panel');
+  panel.style.display='block';
+  setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+function closePanel(){
+  document.getElementById('eval-panel').style.display='none';
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('active'));
+  ST.cur='';ST.ratings={};ST.notes={};ST.photos={};
+}
+
+function renderEvalBody(id){
+  const cats=ITEMS[id];
+  if(!cats){document.getElementById('ep-body').innerHTML='<div style="color:var(--text2);font-size:12px;padding:8px">Sin criterios definidos.</div>';return;}
+  itemIndex=[];
+  let total=0,done=0,html='';
+  Object.entries(cats).forEach(([cat,rows])=>{
+    html+='<div class="cat-title">'+cat+'</div>';
+    rows.forEach((row)=>{
+      const idx=itemIndex.length;
+      itemIndex.push({id,cat,row});
+      const key=id+'__'+idx;
+      const r=ST.ratings[key]||'';
+      total++;if(r)done++;
+      const ph=ST.photos[key]||{};
+      html+='<div class="item-row'+(r?' '+r:'')+'" id="ir'+idx+'">'
+        +'<div class="item-main">'
+        +'<div class="item-text">'+row.t+'</div>'
+        +(row.h?'<div class="item-hint">'+row.h+'</div>':'')
+        +'<div class="item-w">Peso: '+row.w+' pts</div>'
+        +'<button class="dtog" onclick="togDet('+idx+',this)">+ notas / foto</button>'
+        +'<div class="dbox" id="db'+idx+'">'
+        +'<textarea class="ni" placeholder="Observaciones..." onchange="ST.notes[\''+key+'\']=this.value">'+(ST.notes[key]||'')+'</textarea>'
+        +'<div class="photo-row">'
+        +'<button class="pbtn" onclick="tPhoto(\''+key+'\',\'antes\')">📷 Antes</button>'
+        +'<button class="pbtn" onclick="tPhoto(\''+key+'\',\'despues\')">✅ Después</button>'
+        +(ph.antes?'<img class="pthumb" src="'+ph.antes+'"><span class="ptag">Antes</span>':'')
+        +(ph.despues?'<img class="pthumb" src="'+ph.despues+'"><span class="ptag">Después ✓</span>':'')
+        +'</div></div></div>'
+        +'<div class="rb-group">'
+        +'<button class="rb'+(r==='ok'?' ok':'')+'" onclick="rate(\''+key+'\','+idx+',\'ok\',this)" title="Cumple">✅</button>'
+        +'<button class="rb'+(r==='warn'?' warn':'')+'" onclick="rate(\''+key+'\','+idx+',\'warn\',this)" title="Por mejorar">⚠️</button>'
+        +'<button class="rb'+(r==='bad'?' bad':'')+'" onclick="rate(\''+key+'\','+idx+',\'bad\',this)" title="No cumple">❌</button>'
+        +'</div></div>';
+    });
+  });
+  document.getElementById('ep-body').innerHTML=html;
+  updProg(done,total);
+}
+
+function togDet(idx,btn){
+  const el=document.getElementById('db'+idx);if(!el)return;
+  const o=el.classList.toggle('open');
+  btn.textContent=o?'- notas / foto':'+ notas / foto';
+}
+
+function rate(key,idx,val,btn){
+  ST.ratings[key]=val;
+  const row=document.getElementById('ir'+idx);
+  if(row){
+    row.querySelectorAll('.rb').forEach(b=>b.classList.remove('ok','warn','bad'));
+    btn.classList.add(val);
+    row.classList.remove('ok','warn','bad');row.classList.add(val);
+    if(val==='warn'||val==='bad'){
+      const db=document.getElementById('db'+idx);
+      const dt=row.querySelector('.dtog');
+      if(db&&!db.classList.contains('open')){db.classList.add('open');if(dt)dt.textContent='- notas / foto';}
+    }
+  }
+  let done=0;
+  itemIndex.forEach((_,i)=>{if(ST.ratings[ST.cur+'__'+i])done++;});
+  updProg(done,itemIndex.length);
+}
+
+function updProg(d,t){
+  const p=t?Math.round(d/t*100):0;
+  document.getElementById('ep-ptxt').textContent=d+' / '+t+' evaluados';
+  document.getElementById('ep-ppct').textContent=p+'%';
+  document.getElementById('ep-pbar').style.width=p+'%';
+}
+
+function tPhoto(key,type){ST.curPhotoKey=key+'__'+type;document.getElementById('file-'+type).click();}
+
+function handlePhoto(input,type){
+  const f=input.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const key=ST.curPhotoKey.replace('__'+type,'');
+    if(!ST.photos[key])ST.photos[key]={};
+    ST.photos[key][type]=e.target.result;
+    if(ST.cur)renderEvalBody(ST.cur);
+  };
+  reader.readAsDataURL(f);input.value='';
+}
+
+// ==========================================
+// REPORTE RÁPIDO — crea un hallazgo directo,
+// sin pasar por la checklist completa de evaluación.
+// ==========================================
+
+function abrirReporteRapido(){
+  QR={foto:'',nivel:''};
+  document.getElementById('qr-area').value='';
+  document.getElementById('qr-texto').value='';
+  document.getElementById('qr-eval').value='';
+  document.getElementById('qr-fecha').value=new Date().toISOString().slice(0,10);
+  document.getElementById('qr-photo-thumb').style.display='none';
+  document.getElementById('qr-photo-clear').style.display='none';
+  document.getElementById('qr-nivel-warn').classList.remove('active');
+  document.getElementById('qr-nivel-bad').classList.remove('active');
+  document.getElementById('qr-overlay').style.display='flex';
+}
+
+function cerrarReporteRapido(){
+  document.getElementById('qr-overlay').style.display='none';
+}
+
+function qrSetNivel(v){
+  QR.nivel=v;
+  document.getElementById('qr-nivel-warn').classList.toggle('active',v==='warn');
+  document.getElementById('qr-nivel-bad').classList.toggle('active',v==='bad');
+}
+
+function qrTomarFoto(){document.getElementById('file-qr').click();}
+
+function qrQuitarFoto(){
+  QR.foto='';
+  document.getElementById('qr-photo-thumb').style.display='none';
+  document.getElementById('qr-photo-clear').style.display='none';
+}
+
+function handleQrPhoto(input){
+  const f=input.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    QR.foto=e.target.result;
+    const img=document.getElementById('qr-photo-thumb');
+    img.src=QR.foto;img.style.display='inline-block';
+    document.getElementById('qr-photo-clear').style.display='inline-flex';
+  };
+  reader.readAsDataURL(f);input.value='';
+}
+
+function guardarReporteRapido(){
+  const areaId=document.getElementById('qr-area').value;
+  const texto=document.getElementById('qr-texto').value.trim();
+  const evaluador=document.getElementById('qr-eval').value.trim();
+  if(!areaId){alert('Selecciona un área.');return;}
+  if(!evaluador){alert('Por favor ingresa tu nombre.');document.getElementById('qr-eval').focus();return;}
+  if(!texto){alert('Describe la situación encontrada.');return;}
+  if(!QR.nivel){alert('Indica si es "Por mejorar" o "No cumple".');return;}
+
+  const payload={
+    action:'reporteRapido',
+    fecha:document.getElementById('qr-fecha').value||new Date().toISOString().slice(0,10),
+    evaluador:evaluador,
+    area:SL[areaId]||areaId,
+    areaId:areaId,
+    ref:'Reporte rápido',
+    nivel:QR.nivel,
+    texto:texto,
+    nota:'',
+    foto:{antes:QR.foto||''}
+  };
+
+  const btn=document.querySelector('#qr-overlay .btn-p');
+  const original=btn.innerHTML;
+  btn.innerHTML='⏳ Guardando...';btn.disabled=true;
+
+  fetch(WEB_API_URL,{
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(payload)
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(!res||!res.ok)throw new Error((res&&res.error)||'Respuesta inválida del servidor');
+    ST.hallazgos.unshift(res.hallazgo);
+    updateBadges();
+    cerrarReporteRapido();
+    goTab('hallazgos');
+  })
+  .catch(err=>{
+    alert('❌ No se pudo guardar el reporte rápido: '+err.message);
+  })
+  .finally(()=>{
+    btn.innerHTML=original;btn.disabled=false;
+  });
+}
+
+/** Alterna entre cerrado y abierto con un solo click (el "check" del pendiente) */
+function toggleCerrado(id){
+  const h=ST.hallazgos.find(x=>x.id===id);if(!h)return;
+  setEstado(id, h.estado==='cerrado' ? 'abierto' : 'cerrado');
+}
+
+function guardarEval(){
+  const id=ST.cur;if(!id)return;
+  let totalPts=0,earned=0,ok=0,warn=0,bad=0,evaluados=0;
+  const nuevos=[];
+  
+  itemIndex.forEach((it,idx)=>{
+    const key=id+'__'+idx;
+    const r=ST.ratings[key];if(!r)return;
+    evaluados++;totalPts+=it.row.w;
+    if(r==='ok'){earned+=it.row.w;ok++;}
+    else if(r==='warn'){earned+=it.row.w*0.5;warn++;nuevos.push({texto:it.row.t,nivel:'warn',nota:ST.notes[key]||'',foto:ST.photos[key]||{}});}
+    else if(r==='bad'){bad++;nuevos.push({texto:it.row.t,nivel:'bad',nota:ST.notes[key]||'',foto:ST.photos[key]||{}});}
+  });
+  
+  const pct=totalPts?Math.round(earned/totalPts*100):0;
+  const fecha=document.getElementById('ep-fecha').value||new Date().toISOString().slice(0,10);
+  const evaluador=document.getElementById('ep-eval').value.trim();
+  const ref=document.getElementById('ep-ref').value||'';
+
+  if(!evaluador){
+    alert('Por favor ingresa tu nombre antes de guardar la evaluación.');
+    document.getElementById('ep-eval').focus();
+    return;
+  }
+
+  // Construcción estructurada del payload JSON para el Apps Script
+  const payloadBackend = {
+    action: 'crear',
+    fecha: fecha,
+    evaluador: evaluador,
+    area: SL[id] || id,
+    areaId: id,
+    ref: ref,
+    pct: pct,
+    ok: ok,
+    warn: warn,
+    bad: bad,
+    totalItems: itemIndex.length,
+    hallazgos: nuevos
+  };
+
+  // Indicador visual de red y bloqueo del botón para prevenir duplicados
+  const btnGuardar = document.querySelector(".btn-p");
+  const originalText = btnGuardar.innerHTML;
+  btnGuardar.innerHTML = "⏳ Guardando en la nube...";
+  btnGuardar.disabled = true;
+
+  // Llamada HTTP POST al backend. Usamos Content-Type "text/plain" a propósito:
+  // así el navegador no dispara un preflight OPTIONS (que Apps Script no maneja)
+  // y podemos leer la respuesta normalmente (sin "no-cors").
+  fetch(WEB_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payloadBackend)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(!res || !res.ok) throw new Error((res && res.error) || 'Respuesta inválida del servidor');
+
+    // El backend es la fuente de verdad: usamos los IDs, veces y recurrencia que calculó
+    if(res.auditoria) ST.historial.unshift(res.auditoria);
+    if(res.hallazgos && res.hallazgos.length) res.hallazgos.forEach(h=>ST.hallazgos.unshift(h));
+
+    updateBadges();closePanel();
+    alert('Auditoría guardada\n'+pct+'% · '+evaluados+'/'+itemIndex.length+' ítems · '+(warn+bad)+' hallazgo(s)\nDatos sincronizados en la hoja de cálculo.');
+    goTab('hallazgos');
+  })
+  .catch(err => {
+    console.error("Error al persistir auditoría:", err);
+    alert('❌ Error de comunicación con el backend: '+err.message+'\nRevisa la URL del Web Script y que el despliegue esté activo.');
+  })
+  .finally(() => {
+    btnGuardar.innerHTML = originalText;
+    btnGuardar.disabled = false;
+  });
+}
+
+function updateBadges(){
+  const open=ST.hallazgos.filter(h=>h.estado==='abierto');
+  const bo=document.getElementById('badge-open');
+  if(open.length){bo.style.display='inline';bo.textContent=open.length;}else bo.style.display='none';
+  Object.keys(SL).forEach(aid=>{
+    const bc=document.getElementById('bc-'+aid);if(!bc)return;
+    const n=ST.hallazgos.filter(h=>h.areaId===aid&&h.estado==='abierto').length;
+    if(n){bc.style.display='inline';bc.textContent=n;}else bc.style.display='none';
+  });
+}
+
+function filterH(f){
+  ST.hFilter=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('fh-'+f).classList.add('active');
+  renderHallazgos();
+}
+
+function renderHallazgos(){
+  let items=ST.hallazgos;
+  if(ST.hFilter==='abierto')items=items.filter(h=>h.estado==='abierto');
+  else if(ST.hFilter==='proceso')items=items.filter(h=>h.estado==='proceso');
+  else if(ST.hFilter==='cerrado')items=items.filter(h=>h.estado==='cerrado');
+  else if(ST.hFilter==='recurrente')items=items.filter(h=>h.recurrente);
+
+  const areaSel=document.getElementById('fh-area-sel');
+  const areaVal=areaSel?areaSel.value:'';
+  if(areaVal)items=items.filter(h=>h.areaId===areaVal);
+
+  const searchEl=document.getElementById('fh-search');
+  const q=(searchEl?searchEl.value:'').trim().toLowerCase();
+  if(q)items=items.filter(h=>
+    (h.texto||'').toLowerCase().includes(q)
+    ||(h.area||'').toLowerCase().includes(q)
+    ||(h.nota||'').toLowerCase().includes(q)
+    ||(h.evaluador||'').toLowerCase().includes(q)
+  );
+
+  const body=document.getElementById('hallazgos-body');
+  const empty=document.getElementById('hallazgos-empty');
+  if(!items.length){body.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  body.innerHTML=items.map(h=>
+    '<div class="hcard">'
+    +'<div style="display:flex;align-items:flex-start;gap:8px">'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">'
+    +'<span class="badge '+(h.nivel==='bad'?'b-bad':'b-warn')+'">'+(h.nivel==='bad'?'No cumple':'Por mejorar')+'</span>'
+    +(h.recurrente?'<span class="badge b-recur">⚠ Recurrente '+h.veces+'x</span>':'')
+    +'<span class="badge b-'+h.estado+'">'+(h.estado==='abierto'?'Abierto':h.estado==='proceso'?'En proceso':'Cerrado')+'</span>'
+    +(h.ref==='Reporte rápido'?'<span class="badge b-rapido">📝 Rápido</span>':'')
+    +'</div>'
+    +'<div style="font-size:13px;font-weight:500;margin-bottom:3px">'+h.texto+'</div>'
+    +'<div style="font-size:11px;color:var(--text2)">'+h.area+' · '+h.fecha+' · '+h.evaluador+(h.ref&&h.ref!=='Reporte rápido'?' · '+h.ref:'')+'</div>'
+    +(h.nota?'<div style="font-size:11px;color:var(--text2);margin-top:5px;border-top:1px solid var(--border);padding-top:4px">Nota: '+h.nota+'</div>':'')
+    +(h.foto&&(h.foto.antes||h.foto.despues)?'<div style="font-size:10px;color:var(--green2);margin-top:3px">'+(h.foto.antes?'📸 Foto antes · ':'')+(h.foto.despues?'📸 Foto después':'')+'</div>':'')
+    +'<div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">'
+    +'<button class="smbtn'+(h.estado==='proceso'?' ap':'')+'" onclick="setEstado(\''+h.id+'\',\'proceso\')">En proceso</button>'
+    +(h.estado==='cerrado'?'<button class="smbtn" onclick="setEstado(\''+h.id+'\',\'abierto\')">Reabrir</button>':'')
+    +'</div></div>'
+    +'<button class="check-toggle'+(h.estado==='cerrado'?' done':'')+'" onclick="toggleCerrado(\''+h.id+'\')" title="'+(h.estado==='cerrado'?'Reabrir pendiente':'Marcar como cerrado')+'">'+(h.estado==='cerrado'?'✅':'⬜')+'</button>'
+    +'</div></div>'
+  ).join('');
+}
+
+function setEstado(id,estado){
+  const h=ST.hallazgos.find(x=>x.id===id);if(!h)return;
+  const anterior=h.estado;
+  h.estado=estado;updateBadges();renderHallazgos(); // actualización optimista en pantalla
+
+  fetch(WEB_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({action:'actualizarEstado', id:id, estado:estado})
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(!res||!res.ok){
+      h.estado=anterior;updateBadges();renderHallazgos();
+      alert('No se pudo actualizar el estado en la nube: '+((res&&res.error)||'error desconocido')+'\nSe revirtió el cambio.');
+    }
+  })
+  .catch(err=>{
+    h.estado=anterior;updateBadges();renderHallazgos();
+    alert('Error de conexión al actualizar el estado. Se revirtió el cambio.\n'+err.message);
+  });
+}
+
+function renderHistorial(){
+  let items=ST.historial;
+  const areaSel=document.getElementById('hist-area-sel');
+  const areaVal=areaSel?areaSel.value:'';
+  if(areaVal)items=items.filter(ev=>ev.areaId===areaVal);
+
+  const body=document.getElementById('hist-body');
+  const empty=document.getElementById('hist-empty');
+  if(!items.length){body.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  body.innerHTML=items.map(ev=>{
+    const c=ev.pct>=85?'var(--green)':ev.pct>=70?'var(--amber)':'var(--red)';
+    const parcial=ev.evaluados<ev.totalItems;
+    return'<div class="hist-row">'
+      +'<div style="flex:1"><div style="font-weight:500">'+ev.area+'</div>'
+      +'<div style="font-size:10px;color:var(--text2)">'+ev.fecha+' · '+ev.evaluador+(ev.ref?' · '+ev.ref:'')+' · '+ev.evaluados+'/'+ev.totalItems+' ítems'+(parcial?' (parcial)':'')+'</div></div>'
+      +'<div style="display:flex;gap:6px;align-items:center">'
+      +(ev.bad?'<span class="badge b-bad">'+ev.bad+' ❌</span>':'')
+      +(ev.warn?'<span class="badge b-warn">'+ev.warn+' ⚠️</span>':'')
+      +'<span style="font-weight:600;color:'+c+'">'+ev.pct+'%</span></div></div>';
+  }).join('');
+}
+
+function renderResumen(){
+  const total=ST.historial.length;
+  const abiertos=ST.hallazgos.filter(h=>h.estado==='abierto').length;
+  const recurrentes=ST.hallazgos.filter(h=>h.recurrente).length;
+  const avgPct=total?Math.round(ST.historial.reduce((a,e)=>a+e.pct,0)/total):0;
+  const pc=avgPct>=85?'var(--green)':avgPct>=70?'var(--amber)':'var(--red)';
+  document.getElementById('res-metrics').innerHTML=
+    '<div class="mc"><div class="mn" style="color:'+pc+'">'+avgPct+'%</div><div class="ml">Promedio general</div></div>'
+    +'<div class="mc"><div class="mn" style="color:var(--red)">'+abiertos+'</div><div class="ml">Hallazgos abiertos</div></div>'
+    +'<div class="mc"><div class="mn" style="color:var(--purple)">'+recurrentes+'</div><div class="ml">Recurrentes</div></div>';
+  const recs=ST.hallazgos.filter(h=>h.recurrente&&h.estado!=='cerrado');
+  document.getElementById('res-recur').innerHTML=recs.length
+    ?'<div class="sec-label" style="color:var(--purple)">Puntos recurrentes sin cerrar</div>'
+    +recs.map(h=>'<div style="padding:8px 10px;border-radius:8px;background:var(--purplebg);border:1px solid #AFA9EC;margin-bottom:5px;font-size:12px"><span style="font-weight:500">'+h.texto+'</span><div style="font-size:10px;color:var(--purple);margin-top:2px">'+h.area+' · '+h.veces+'x reportado</div></div>').join('')
+    :'';
+  const byArea={};
+  ST.historial.forEach(ev=>{
+    if(!byArea[ev.areaId])byArea[ev.areaId]={label:ev.area,evals:0,sumPct:0,hallazgos:0};
+    byArea[ev.areaId].evals++;byArea[ev.areaId].sumPct+=ev.pct;
+  });
+  ST.hallazgos.forEach(h=>{if(byArea[h.areaId]&&h.estado!=='cerrado')byArea[h.areaId].hallazgos++;});
+  document.getElementById('res-areas').innerHTML=Object.values(byArea).map(a=>{
+    const avg=Math.round(a.sumPct/a.evals);
+    const c=avg>=85?'var(--green)':avg>=70?'var(--amber)':'var(--red)';
+    return'<div class="hist-row"><div style="flex:1"><div style="font-weight:500">'+a.label+'</div><div style="font-size:10px;color:var(--text2)">'+a.evals+' evaluación(es)</div></div>'
+      +'<div style="display:flex;gap:6px;align-items:center">'+(a.hallazgos?'<span class="badge b-warn">'+a.hallazgos+' abiertos</span>':'')+'<span style="font-weight:600;color:'+c+'">'+avg+'%</span></div></div>';
+  }).join('')||'<div style="color:var(--text2);font-size:12px;padding:8px">Aún no hay evaluaciones.</div>';
+}
+
+function exportarResumen(){
+  const avg=ST.historial.length?Math.round(ST.historial.reduce((a,e)=>a+e.pct,0)/ST.historial.length):0;
+  const recs=ST.hallazgos.filter(h=>h.recurrente&&h.estado!=='cerrado').map(h=>'- '+h.texto+' ('+h.area+', '+h.veces+'x)').join('\n');
+  const abiertos=ST.hallazgos.filter(h=>h.estado==='abierto').slice(0,15).map(h=>'- ['+( h.nivel==='bad'?'No cumple':'Por mejorar')+'] '+h.area+': '+h.texto).join('\n');
+  const txt='RESUMEN DE AUDITORIAS OPERATIVAS Y DE SERVICIO — HARMONY PROJECTS\n\nEvaluaciones: '+ST.historial.length+' | Promedio: '+avg+'% | Hallazgos abiertos: '+ST.hallazgos.filter(h=>h.estado==='abierto').length+'\n\nPUNTOS RECURRENTES SIN CERRAR:\n'+(recs||'Ninguno')+'\n\nHALLAZGOS ABIERTOS PRIORITARIOS:\n'+(abiertos||'Ninguno');
+  navigator.clipboard.writeText(txt).then(()=>alert('Resumen copiado al portapapeles')).catch(()=>{const w=window.open('','_blank');w.document.write('<pre>'+txt+'</pre>');});
+}
+
+document.getElementById('ep-fecha').value=new Date().toISOString().slice(0,10);
+filterH('todos');
+poblarSelectsArea();
+cargarDatos();
+</script>
+</body>
+</html>
 
